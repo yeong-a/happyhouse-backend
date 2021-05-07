@@ -3,30 +3,39 @@ package com.ssafy.happyhouse.model.service;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.ssafy.happyhouse.model.dao.BoardDao;
-import com.ssafy.happyhouse.model.dao.BoardDaoImpl;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ssafy.happyhouse.model.dao.BoardDAO;
 import com.ssafy.happyhouse.model.dto.Board;
 
+@Service
 public class BoardServiceImpl implements BoardService {
-	private BoardDao boardDao = new BoardDaoImpl();
+	
+	private BoardDAO BoardDAO;
+	@Autowired
+	public void setUserDAO(BoardDAO BoardDAO) {
+		this.BoardDAO = BoardDAO;
+	}
 
 	@Override
-	public boolean register(String title, String content) throws SQLException {
-		return boardDao.insert(title, content);
+	public int register(@Param("title") String title, @Param("content") String content) throws SQLException {
+		return BoardDAO.insert(title, content);
 	}
 
 	@Override
 	public List<Board> getBoardList() throws SQLException {
-		return boardDao.select();
+		return BoardDAO.select();
 	}
 
 	@Override
-	public void update(String bno, String title, String content) throws SQLException {
-		boardDao.update(bno, title, content);
+	public void update(@Param("bno") String bno, @Param("title") String title, @Param("content") String content) throws SQLException {
+		BoardDAO.update(bno, title, content);
 	}
 
 	@Override
 	public void delete(String bno) throws SQLException {
-		boardDao.delete(bno);
+		BoardDAO.delete(bno);
 	}
 }

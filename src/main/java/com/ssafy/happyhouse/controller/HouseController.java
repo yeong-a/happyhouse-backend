@@ -8,10 +8,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Controller;
+
 import com.ssafy.happyhouse.model.dto.House;
 import com.ssafy.happyhouse.model.service.HouseService;
 import com.ssafy.happyhouse.model.service.HouseServiceImpl;
 
+@Controller
 public class HouseController {
 	private HouseService houseService = new HouseServiceImpl();
 

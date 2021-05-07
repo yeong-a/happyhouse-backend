@@ -2,14 +2,11 @@ package com.ssafy.happyhouse.controller;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.ssafy.happyhouse.model.dto.PageInfo;
 
 // loadOnStartup : 미리 init() 호출해서 만들어놈, 안할경우는 사용자가 호출할때 한번 init() 호출함
 @WebServlet(loadOnStartup = 1, urlPatterns = {"*.do"})
@@ -19,12 +16,6 @@ public class MainServlet extends HttpServlet {
 	private BoardController boardController = new BoardController();
 	private HouseController houseController = new HouseController();
 	
-	@Override
-	public void init() throws ServletException {
-		ServletContext application = getServletContext();
-		application.setAttribute("root", application.getContextPath());
-	}
-       
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		process(request, response);
 	}

@@ -1,22 +1,30 @@
 package com.ssafy.happyhouse.model.service;
 
 import java.sql.SQLException;
-import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.ssafy.happyhouse.model.dao.UserDAO;
-import com.ssafy.happyhouse.model.dao.UserDAOImpl;
 import com.ssafy.happyhouse.model.dto.User;
 
 // Model : Service
 // 회원 관련 서비스 로직
+
+@Service
 public class UserServiceImpl implements UserService {
-	private UserDAO userDao = new UserDAOImpl();
+	
+	private UserDAO userDAO;
+	@Autowired
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
+	}
 
 	// 회원가입
 	@Override
 	public boolean signup(User user) throws SQLException {
 		if (getUser(user.getEmail()) == null) {
-			return userDao.insert(user);
+			return userDAO.insert(user) > 0;
 		} else {
 			throw new RuntimeException("아이디가 중복되어 회원가입이 불가능합니다.");
 		}
@@ -25,7 +33,7 @@ public class UserServiceImpl implements UserService {
 	// 회원조회
 	@Override
 	public User getUser(String userId) throws SQLException {
-		return userDao.select(userId);
+		return userDAO.select(userId);
 	}
 
 	// 로그인
@@ -50,7 +58,7 @@ public class UserServiceImpl implements UserService {
 		user.setName(name);
 		user.setAddress(address);
 		user.setDetailAddress(detailAddress);
-		return userDao.update(user);
+		return userDAO.update(user) > 0;
 	}
 
 	@Override
@@ -60,7 +68,7 @@ public class UserServiceImpl implements UserService {
 			return false;
 		}
 		user.setPwd(pwd);
-		return userDao.update(user);
+		return userDAO.update(user) > 0;
 	}
 
 	@Override
@@ -69,6 +77,6 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			return false;
 		}
-		return userDao.delete(user);
+		return userDAO.delete(user) > 0;
 	}
 }

@@ -10,7 +10,7 @@ public class Board {
 		this.title = title;
 		this.content = content;
 		this.hit = hit;
-	}
+	} 
 	public String getBno() {
 		return bno;
 	}

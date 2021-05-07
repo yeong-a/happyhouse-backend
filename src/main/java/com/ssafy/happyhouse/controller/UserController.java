@@ -8,10 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Controller;
+
 import com.ssafy.happyhouse.model.dto.User;
 import com.ssafy.happyhouse.model.service.UserService;
 import com.ssafy.happyhouse.model.service.UserServiceImpl;
 
+@Controller
 public class UserController {
 	private UserService userService = new UserServiceImpl();
 
