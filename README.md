@@ -1,13 +1,13 @@
-# FRAMEWORK 1조 박상준,장영아
+# ✨ Spring 관통 프로젝트6 - 1조 박상준,장영아
 
-## Servlet과 JSP로 구성되어 있는 기존 프로젝트를 Spring/Mybatis  기반의 프로젝트로 재구성한다.
+### Servlet과 JSP로 구성되어 있는 기존 프로젝트를 Spring/Mybatis  기반의 프로젝트로 재구성한다.
 
-## Spring Framework?
+## ✅ Spring Framework?
 
 - EJB(Enterprise Java Bean)라는 무겁고 복잡한 플랫폼에서 벗어나 POJO(Plain Old Java Object)를 기반으로 하는 경량의 환경을 제공한다.
 - 스프링 프레임워크가 처음 등장했을 떄는 단순히 애플리케이션 운용에 필요한 객체들을 생성하고, 객체들 사이에서 의존성을 주입해주는 단순한 컨테이너로서의 기능만 제공했지만 발전을 거듭한 현재의 스프링은 다양한 엔터프라이즈 시스템 개발에 필요한 모든 분야를 지원하는 하나의 플랫폼으로 자리잡았다.
 
-## Spring Boot의 장점
+## ✅ Spring Boot의 장점
 
 **1) 라이브러리 관리 자동화**
 
@@ -32,12 +32,10 @@
 
 - 애플리케이션을 개발하고 테스트까지 마쳤으면 애플리케이션을 실제 운영 서버에 배포하기 위해서 패키징을 해야하는데, 프로젝트가 일반 자바 프로젝트라면 간단하게 JAR파일로 패키징하면 되지만 웹 프로젝트라면 WAR 파일로 패키징 해야한다.
 - 스프링 부트는 독립적으로 실행 가능한 애플리케이션을 빠르게 개발하는 것을 목표로 하기 때문에 웹 애플리케이션도 WAR가 아닌 JAR파일로 패키징 하여 사용할 수 있다.
-- 
 
-BoardController.java
+### BoardController.java
 
 ```java
-
 @RequestMapping("/board")
 @Controller
 public class BoardController {
@@ -49,27 +47,26 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 	
-	@GetMapping("addArticle")
+	@PostMapping("addArticle")
 	private String addArticle(@RequestParam String title,@RequestParam String content)
 			throws SQLException{
 		boardService.register(title, content);
 
-		return "/notice";
+		return "redirect:/board/showArticle";
 	}
 	
-	@GetMapping("deleteArticle")
+	@PostMapping("deleteArticle")
 	private String deleteArticle(@RequestParam String bno)
 			throws SQLException, ServletException, IOException {
 		boardService.delete(bno);
-		return "/notice";
+		return "redirect:/board/showArticle";
 	}
-
 	
-	@GetMapping("updateArticle")
+	@PostMapping("updateArticle")
 	private String updateArticle(@RequestParam String bno,@RequestParam String title,@RequestParam String content) throws SQLException {
 	
 		boardService.update(bno, title, content);
-		return "/notice";
+		return "redirect:/board/showArticle";
 	}
 
 	@RequestMapping("showArticle")
@@ -78,15 +75,13 @@ public class BoardController {
 		request.setAttribute("boardList", boardService.getBoardList());
 		
 		return "/notice";
-	}	
+	}
 }
 ```
 
-UserRestController 
+### UserRestController.java
 
 ```java
-package com.ssafy.happyhouse.controller.rest;
-
 @RequestMapping("/user")
 @RestController
 public class UserRestController {
@@ -98,30 +93,26 @@ public class UserRestController {
 		this.userService = userService;
 	}
 	
-	
-	
-	@PostMapping("/login")  
-	private void login(@RequestParam String email,@RequestParam String pwd, HttpSession session,HttpServletResponse response) throws SQLException {
-		System.out.println(email);
-		System.out.println(pwd);
-		String name = userService.login(email,pwd);
-		
+	@PostMapping("/login")
+	private boolean login(@ModelAttribute User user, HttpSession session,HttpServletResponse response) throws SQLException {
+
+		String name = userService.login(user.getEmail(), user.getPwd());
+
 		if (name == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+			return true;
 		}
 
-		session.setAttribute("email",email);
+		session.setAttribute("email", user.getEmail());
 		session.setAttribute("name", name);
 		response.setStatus(HttpServletResponse.SC_OK);
-		return;
+		return true;
 	}
 	
-	@PostMapping("/updateInfo")  
+	@PostMapping("/updateInfo")
 	private boolean updateInfo(@ModelAttribute User user, HttpSession session,HttpServletResponse response) throws SQLException {
 		
 		String email = user.getEmail();
-
 		String name = user.getName();
 		String address = user.getAddress();
 		String detailAddress = user.getDetailAddress();
@@ -134,7 +125,7 @@ public class UserRestController {
 		return true;
 	}
 	
-	@PostMapping("/changepassword")  
+	@PostMapping("/changepassword")
 	private boolean changePassword(@RequestParam(value="current_password") String currentPassword,@RequestParam String password,HttpSession session,HttpServletResponse response) throws SQLException {
 		
 		String email = (String)session.getAttribute("email");
@@ -153,7 +144,7 @@ public class UserRestController {
 		return true;
 	}
 	
-	@PostMapping("/signup")  
+	@PostMapping("/signup")
 	private boolean signup(@ModelAttribute User user, HttpSession session,HttpServletResponse response) throws SQLException {
 
 		if (userService.signup(user)) {
@@ -164,7 +155,7 @@ public class UserRestController {
 		return true;
 	}
 	
-	@PostMapping("/delete") 
+	@PostMapping("/delete")
 	private boolean delete(HttpSession session,HttpServletResponse response) throws SQLException  {
 		
 		String email = (String) session.getAttribute("email");
@@ -177,49 +168,48 @@ public class UserRestController {
 		}
 		return true;
 	}
-	
 }
+
 ```
 
-# MyBatis?
+## ✅ MyBatis?
 
-MyBatis 는 개발자가 지정한 SQL, 저장프로시저 그리고 몇가지 고급 매핑을 지원하는 퍼시스턴스 프레임워크이다. MyBatis 는 JDBC 코드와 수동으로 셋팅하는 파라미터와 결과 매핑을 제거한다. MyBatis 는 데이터베이스 레코드에 원시타입과 Map 인터페이스 그리고 자바 POJO 를 설정하고 매핑하기 위해 XML 과 애노테이션을 사용할 수 있다.
+- MyBatis 는 개발자가 지정한 SQL, 저장프로시저 그리고 몇가지 고급 매핑을 지원하는 퍼시스턴스 프레임워크이다.
+- MyBatis 는 JDBC 코드와 수동으로 셋팅하는 파라미터와 결과 매핑을 제거한다. 
+- MyBatis 는 데이터베이스 레코드에 원시타입과 Map 인터페이스 그리고 자바 POJO 를 설정하고 매핑하기 위해 XML과 애노테이션을 사용할 수 있다.
 
-## **[Mybatis의 장점](https://tkjeon.tistory.com/entry/Mybatis%EC%9D%98-%EC%9E%A5%EC%A0%90)**
+## ✅ Mybatis의 장점
 
 Mybatis는 객체지향 어플리케이션에서 관계형 데이터베이스를 쉽게 사용할 수 있도록 도와주는 데이터 맵핑 프레임워크이다. 이러한 Mybatis의 장점은 다음과 같다.
 
-- SQL 및 프로시져구문의 독립
-- 복잡한 JDBC코드를 걷어내며 깔끔한 소스코드를 유지할 수 있다.
-- 수동적인 파라미터 설정과 쿼리 결과에 대한 맵핑 구문을 제거할 수 있다.
+**1) SQL 및 프로시져구문의 독립**
 
-Mybatis는 별도의 XML 문서에 맵핑된 프로시져와 SQL 구문을 연동하여 데이터베이스와 연동할 수 있도록 도와주어 데이터베이스 개발에 집중할 수 있도록 돕는다. 결과적으로 복잡한 JDBC 연동 코드나 트랜잭션 코드를 간소화시킬 수 있도록 도와주며 이는 결과적으로 소스코드의 유지보수를 용이하게 돕는다. 같은 맥락이지만 ResultSet과 같이 결과값을 맵핑하는 객체 또한 자동화시켜주어 많은 라인의 소스코드를 줄일 수 있다.
+- Mybatis는 별도의 XML 문서에 맵핑된 프로시져와 SQL 구문을 연동하여 데이터베이스와 연동할 수 있도록 도와주어 데이터베이스 개발에 집중할 수 있도록 돕는다. 
 
-그밖에도 데이터베이스 개발이 Java와 분리된다는 것은 프로젝트 협업시에도 많은 이점을 제공해 줄 수 있다
+**2) 복잡한 JDBC코드를 걷어내며 깔끔한 소스코드를 유지 가능**
 
-UserDAO.java
+- 복잡한 JDBC 연동 코드나 트랜잭션 코드를 간소화시킬 수 있도록 도와주며 이는 결과적으로 소스코드의 유지보수를 용이하게 돕는다.
+
+**3) 수동적인 파라미터 설정과 쿼리 결과에 대한 맵핑 구문을 제거할 수 있음**
+
+- ResultSet과 같이 결과값을 맵핑하는 객체 또한 자동화시켜주어 많은 라인의 소스코드를 줄일 수 있다.
+
+그밖에도 데이터베이스 개발이 Java와 분리된다는 것은 프로젝트 협업시에도 많은 이점을 제공해 줄 수 있다
+
+### UserDAO.java
 
 ```java
-package com.ssafy.happyhouse.model.dao;
-
 @Mapper
 @Repository
 public interface UserDAO {
-	// 회원정보 insert
 	int insert(User user) throws SQLException;
-
-	// 회원정보 select
 	User select(String email) throws SQLException;
-
-	// 회원정보 update
 	int update(User user) throws SQLException;
-	
-	// 회원정보 delete
 	int delete(User user) throws SQLException;
 }
 ```
 
-UserDAO.xml
+### UserDAO.xml
 
 ```sql
 <!DOCTYPE mapper
