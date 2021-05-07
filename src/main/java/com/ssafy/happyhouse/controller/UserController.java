@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +16,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+=======
+import org.springframework.stereotype.Controller;
+>>>>>>> e2f102ffa061febe047a25f014b0bb09cde294f9
 
 import com.ssafy.happyhouse.model.dto.User;
 import com.ssafy.happyhouse.model.service.UserService;
 import com.ssafy.happyhouse.model.service.UserServiceImpl;
 
+<<<<<<< HEAD
 @RequestMapping("/user")
+=======
+>>>>>>> e2f102ffa061febe047a25f014b0bb09cde294f9
 @Controller
 public class UserController {
 	private UserService userService = new UserServiceImpl();

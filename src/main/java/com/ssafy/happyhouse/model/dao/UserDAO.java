@@ -1,20 +1,24 @@
 package com.ssafy.happyhouse.model.dao;
 
 import java.sql.SQLException;
-import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import com.ssafy.happyhouse.model.dto.User;
 
+@Mapper
+@Repository
 public interface UserDAO {
 	// 회원정보 insert
-	boolean insert(User user) throws SQLException;
+	int insert(User user) throws SQLException;
 
 	// 회원정보 select
 	User select(String email) throws SQLException;
 
 	// 회원정보 update
-	boolean update(User user) throws SQLException;
+	int update(User user) throws SQLException;
 	
 	// 회원정보 delete
-	boolean delete(User user) throws SQLException;
+	int delete(User user) throws SQLException;
 }
