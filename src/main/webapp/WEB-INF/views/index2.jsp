@@ -72,7 +72,7 @@ footer {
 						<div class="header-top-dropdown text-right">
 							<div class="header-top-logout" style="display: none;">
 								<div class="btn-group">
-									<a href="./signUp.html" class="btn btn-default btn-sm">Sign Up</a>
+									<a href="./signUp.jsp" class="btn btn-default btn-sm">Sign Up</a>
 								</div>
 								<div class="btn-group">
 									<a class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">Login</a>
@@ -80,10 +80,10 @@ footer {
 							</div>
 							<div class="header-top-login">
 								<div class="btn-group">
-									<a href="${root}/user/logout.do" class="btn btn-default btn-sm">Logout</a>
+									<a href="${root}/user/logout" class="btn btn-default btn-sm">Logout</a>
 								</div>
 								<div class="btn-group">
-									<a href="${root}/user/mypage.do" class="btn btn-default btn-sm">회원정보</a>
+									<a href="${root}/user/mypage" class="btn btn-default btn-sm">회원정보</a>
 								</div>
 							</div>
 						</div>

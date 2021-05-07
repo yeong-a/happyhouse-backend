@@ -14,7 +14,7 @@ pageEncoding="UTF-8"%>
 
       <!-- Modal body -->
       <div class="modal-body">
-        <form class="was-validated" id="login-form">
+        <form method="post" action="${root}/user/login" class="was-validated" id="login-form">
           <div class="form-group">
             <label>이메일:</label>
             <input
@@ -36,7 +36,7 @@ pageEncoding="UTF-8"%>
               placeholder="비밀번호를 입력해주세요"
               required
             />
-            <a href="${root}/user/searchPassword.do" class="text-secondary"
+            <a href="${root}/user/searchPassword" class="text-secondary"
               >*비밀번호가 기억이 안 나요</a
             >
           </div>
@@ -80,7 +80,7 @@ pageEncoding="UTF-8"%>
         <a
           class="btn btn-success"
           id="btn_logout"
-          href="${root}/user/logout.do"
+          href="${root}/user/logout"
           >로그아웃</a
         >
         <button
@@ -99,7 +99,7 @@ pageEncoding="UTF-8"%>
   loginForm.onsubmit = function (e) {
     e.preventDefault();
     $.ajax({
-      url: "${root}/user/login.do",
+      url: "${root}/user/login",
       method: "post",
       data: $(loginForm).serialize(),
       success: function () {

@@ -8,37 +8,57 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.ssafy.happyhouse.model.dto.House;
 import com.ssafy.happyhouse.model.service.HouseService;
 import com.ssafy.happyhouse.model.service.HouseServiceImpl;
+import com.ssafy.happyhouse.model.service.UserService;
 
+
+@RequestMapping("/house")
+@Controller
 public class HouseController {
-	private HouseService houseService = new HouseServiceImpl();
+	private HouseService houseService;
 
-	public void process(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException, SQLException {
-		// /house/xxx.do
-		String url = request.getServletPath().substring(6); // /xxx.do
-		if (url.equals("/detail.do")) {
-			getHouseList(request, response);
-		} else if (url.equals("/detail2.do")) {
-			getHouseListByName(request, response);
-		}
+	@Autowired
+	public void setUserService(HouseService houseService) {
+		this.houseService = houseService;
 	}
-
-	private void getHouseListByName(HttpServletRequest request, HttpServletResponse response)
-			throws SQLException, ServletException, IOException {
-		String aptName = request.getParameter("aptName");
+	
+	@GetMapping("/datail2")
+	private String getHouseListByName(@RequestParam String aptName,HttpServletRequest request) throws SQLException{
+		
 		List<House> houseList = houseService.getHouseListByName(aptName);
-		request.setAttribute("houseList", houseList);
-		request.getRequestDispatcher("/detail2.jsp").forward(request, response);
+		request.setAttribute("houseList", houseList);		
+		return "/house/detail2";
 	}
-
-	private void getHouseList(HttpServletRequest request, HttpServletResponse response)
-			throws SQLException, ServletException, IOException {
-		String dong = request.getParameter("dong");
+	
+//	private void getHouseListByName(HttpServletRequest request, HttpServletResponse response)
+//			throws SQLException, ServletException, IOException {
+//		String aptName = request.getParameter("aptName");
+//		List<House> houseList = houseService.getHouseListByName(aptName);
+//		request.setAttribute("houseList", houseList);
+//		request.getRequestDispatcher("/detail2.jsp").forward(request, response);
+//	}
+	@GetMapping("/datail")
+	private String getHouseList(@RequestParam String sido,@RequestParam String gugun,@RequestParam String dong,@RequestParam String type,HttpServletRequest request) throws SQLException {
 		List<House> houseList = houseService.getHouseList(dong);
 		request.setAttribute("houseList", houseList);
-		request.getRequestDispatcher("/detail.jsp").forward(request, response);
+		return "/datail";
 	}
 }
+
+
+
+//private void getHouseList(HttpServletRequest request, HttpServletResponse response)
+//		throws SQLException, ServletException, IOException {
+//	String dong = request.getParameter("dong");
+//	List<House> houseList = houseService.getHouseList(dong);
+//	request.setAttribute("houseList", houseList);
+//	request.getRequestDispatcher("/detail.jsp").forward(request, response);
+//}

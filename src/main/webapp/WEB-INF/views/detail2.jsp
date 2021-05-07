@@ -94,7 +94,7 @@ pageEncoding="UTF-8"%>
         $(".apart").click(function () {
           let name = $(this).children(".name").text();
           location.href =
-            "${root}/house/detail2.do?aptName=" + name.substring(7);
+            "${root}/house/detail2?aptName=" + name.substring(7);
         });
       });
     </script>

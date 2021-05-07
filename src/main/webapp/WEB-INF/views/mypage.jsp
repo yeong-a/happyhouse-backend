@@ -20,7 +20,7 @@ pageEncoding="UTF-8"%>
               <h4>회원 정보 수정</h4>
             </div>
             <div class="col-lg-8">
-              <form id="update-info-form">
+              <form method="post" action="${root}/user/updateInfo"  id="update-info-form">
                 <div class="form-group">
                   <label class="text-secondary" for="inputPassword">이름</label>
                   <input
@@ -187,7 +187,7 @@ pageEncoding="UTF-8"%>
       changePasswordForm.onsubmit = function (e) {
         e.preventDefault();
         $.ajax({
-          url: "${root}/user/changepassword.do",
+          url: "${root}/user/changepassword",
           method: "post",
           data: $(changePasswordForm).serialize(),
           success: function () {
@@ -205,7 +205,7 @@ pageEncoding="UTF-8"%>
       const deleteUserButton = document.getElementById("delete-user-btn");
       deleteUserButton.onclick = function () {
         $.ajax({
-          url: "${root}/user/delete.do",
+          url: "${root}/user/delete",
           method: "post",
           success: function () {
             alert("계정 삭제가 완료되었습니다.");
