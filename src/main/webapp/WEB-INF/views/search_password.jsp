@@ -24,7 +24,7 @@ pageEncoding="UTF-8"%>
           <p>회원가입 시 입력했던 정보들을 입력해주세요.</p>
         </div>
         <div class="col-lg-8">
-          <form action="post">
+          <form>
             <div class="form-group">
               <label class="text-dark" for="inputPassword4">Name*</label>
               <input
