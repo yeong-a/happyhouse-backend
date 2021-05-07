@@ -7,8 +7,6 @@ pageEncoding="UTF-8"%>
 <%
   String root = request.getContextPath();
   List<Board> list = (ArrayList<Board>) request.getAttribute("boardList");
-  if(list == null || list.size() == 0)
-      response.sendRedirect(root + "/board/showArticle");
 %>
 <!DOCTYPE html>
 <html>
@@ -87,7 +85,7 @@ pageEncoding="UTF-8"%>
             .parent()
             .parent()
             .children(".bd-content")
-            .text();
+            .text().trim();
           $(".hidden").val(bno);
           $(".up-title").val(title);
           $(".up-content").val(content);
@@ -109,7 +107,7 @@ pageEncoding="UTF-8"%>
 
           <!-- Modal body -->
           <div class="modal-body">
-            <form method="get">
+            <form method="post">
               <div class="form-group">
                 <label for="title">제목</label>
                 <input
@@ -132,14 +130,14 @@ pageEncoding="UTF-8"%>
               <button
                 type="submit"
                 class="btn btn-dark"
-                formaction="<%=root%>/board/updateArticle"
+                formaction="${root}/board/updateArticle"
               >
                                 수정
               </button>
               <button
                 type="submit"
                 class="btn btn-dark"
-                formaction="<%=root%>/board/deleteArticle"
+                formaction="${root}/board/deleteArticle"
               >
                                 삭제
               </button>
@@ -163,7 +161,7 @@ pageEncoding="UTF-8"%>
 
           <!-- Modal body -->
           <div class="modal-body">
-            <form action="<%=root %>/board/addArticle" method="get">
+            <form action="${root}/board/addArticle" method="post">
               <div class="form-group">
                 <label for="title">제목</label>
                 <input

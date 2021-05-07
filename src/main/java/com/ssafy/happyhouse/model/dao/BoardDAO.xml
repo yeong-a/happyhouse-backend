@@ -7,7 +7,7 @@
 <mapper namespace="com.ssafy.happyhouse.model.dao.BoardDAO">
 
 	<insert id="insert" parameterType="String">
-		insert into board
+		insert into board (title, content)
 		values(#{title} ,#{content})
 	</insert>
 
