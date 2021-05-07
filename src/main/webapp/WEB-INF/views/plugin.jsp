@@ -32,7 +32,7 @@ pageEncoding="UTF-8"%>
 <!-- Core theme CSS (includes Bootstrap)-->
 
   
-<link href="resources/css/styles.css" rel="stylesheet" type="text/css">
+<link href="${root}/css/styles.css" rel="stylesheet" type="text/css">
 <script
   src="https://code.jquery.com/jquery-latest.min.js"
   type="application/javascript"
@@ -47,7 +47,7 @@ pageEncoding="UTF-8"%>
 <!-- Third party plugin JS-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 <!-- Contact form JS-->
-<script src="resources/assets/mail/jqBootstrapValidation.js"></script>
-<script src="resources/assets/mail/contact_me.js"></script>
+<script src="${root}/assets/mail/jqBootstrapValidation.js"></script>
+<script src="${root}/assets/mail/contact_me.js"></script>
 <!-- Core theme JS-->
 <script src="resources/js/scripts.js"></script>

@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.stereotype.Controller;
 
 import com.ssafy.happyhouse.model.service.BoardService;
-import com.ssafy.happyhouse.model.service.BoardServiceImpl;
 
 
 @RequestMapping("/board")
