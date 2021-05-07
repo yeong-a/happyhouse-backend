@@ -28,7 +28,7 @@
 	
 	<update id="update" parameterType="User">
 		update member 
-		set name = {name}, 
+		set name = #{name}, 
 		address = #{address}, 
 		detailAddress = #{detailAddress}, 
 		pwd = #{pwd} 

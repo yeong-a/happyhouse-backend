@@ -92,8 +92,8 @@ public class UserRestController {
 		return true;
 	}
 	
-	@PostMapping("/deleteUser") //REST!!!!!!!!!!!
-	private boolean deleteUser(HttpSession session,HttpServletResponse response) throws SQLException  {
+	@PostMapping("/delete") //REST!!!!!!!!!!!
+	private boolean delete(HttpSession session,HttpServletResponse response) throws SQLException  {
 		
 		String email = (String) session.getAttribute("email");
 

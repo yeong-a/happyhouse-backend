@@ -54,7 +54,7 @@
 	<select id="selectAddressByName" parameterType="String" resultMap="HouseInfoResultMap">
 		select *
 		from houseinfo
-		where dong = #{dong}
+		where AptName = #{aptName}
 	</select>
 	
 </mapper>

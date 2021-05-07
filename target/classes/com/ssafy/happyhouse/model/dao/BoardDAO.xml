@@ -12,8 +12,8 @@
 	</insert>
 
 	<resultMap type="Board" id="BoardResultMap">
-		<id column="bno" property="id"/>
-		<result column="itle" property="title"/>
+		<id column="bno" property="bno"/>
+		<result column="title" property="title"/>
 		<result column="content" property="content"/>
 		<result column="hit" property="hit"/>
 	</resultMap>

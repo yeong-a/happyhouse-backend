@@ -49,7 +49,7 @@ public class BoardController {
 		return "/notice";
 	}
 
-	@RequestMapping
+	@RequestMapping("showArticle")
 	private String showArticle(HttpServletRequest request) throws SQLException
 		{
 		request.setAttribute("boardList", boardService.getBoardList());

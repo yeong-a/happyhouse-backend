@@ -25,12 +25,12 @@ public class HouseController {
 		this.houseService = houseService;
 	}
 	
-	@GetMapping("/datail2")
+	@GetMapping("/detail2")
 	private String getHouseListByName(@RequestParam String aptName,HttpServletRequest request) throws SQLException{
 		
 		List<House> houseList = houseService.getHouseListByName(aptName);
 		request.setAttribute("houseList", houseList);		
-		return "/house/detail2";
+		return "/detail2";
 	}
 	
 //	private void getHouseListByName(HttpServletRequest request, HttpServletResponse response)
@@ -40,11 +40,11 @@ public class HouseController {
 //		request.setAttribute("houseList", houseList);
 //		request.getRequestDispatcher("/detail2.jsp").forward(request, response);
 //	}
-	@GetMapping("/datail")
+	@GetMapping("/detail")
 	private String getHouseList(@RequestParam String sido,@RequestParam String gugun,@RequestParam String dong,@RequestParam String type,HttpServletRequest request) throws SQLException {
 		List<House> houseList = houseService.getHouseList(dong);
 		request.setAttribute("houseList", houseList);
-		return "/datail";
+		return "/detail";
 	}
 }
 

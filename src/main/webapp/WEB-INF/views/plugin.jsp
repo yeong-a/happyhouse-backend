@@ -50,4 +50,4 @@ pageEncoding="UTF-8"%>
 <script src="${root}/assets/mail/jqBootstrapValidation.js"></script>
 <script src="${root}/assets/mail/contact_me.js"></script>
 <!-- Core theme JS-->
-<script src="resources/js/scripts.js"></script>
+<script src="${root}/js/scripts.js"></script>

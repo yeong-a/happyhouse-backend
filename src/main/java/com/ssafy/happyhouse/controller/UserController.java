@@ -29,20 +29,33 @@ public class UserController {
 		return "redirect:/happyhouse";
 	}
 
-
-	private void interestsSetting(HttpServletRequest request, HttpServletResponse response)
+	@RequestMapping("/interestsSetting")
+	private String interestsSetting(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("/interests_setting.jsp").forward(request, response);
+		return "/interests_setting";
 	}
-
-	private void interestsInfo(HttpServletRequest request, HttpServletResponse response)
+	
+	@RequestMapping("/interestsInfo")
+	private String interestsInfo(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("/interests_info.jsp").forward(request, response);
+		return "/interests_info";
 	}
-
-	private void searchPassword(HttpServletRequest request, HttpServletResponse response)
+	
+	@RequestMapping("/searchPassword")
+	private String searchPassword(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("/search_password.jsp").forward(request, response);
+		return "/search_password";
 	}
-
+	
+	@RequestMapping("/mypage")
+	private String mypage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		return "/mypage";
+	}
+	
+	@RequestMapping("/signuppage")
+	private String signuppage(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		return "/signup";
+	}
 }

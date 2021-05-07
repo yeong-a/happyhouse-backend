@@ -107,7 +107,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             location.href = "${root}";
           },
           statusCode: {
-            400: function () {
+            500: function () {
               alert("중복된 이메일입니다.");
             },
           },

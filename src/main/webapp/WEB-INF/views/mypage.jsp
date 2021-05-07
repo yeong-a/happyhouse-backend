@@ -20,7 +20,7 @@ pageEncoding="UTF-8"%>
               <h4>회원 정보 수정</h4>
             </div>
             <div class="col-lg-8">
-              <form method="post" action="${root}/user/updateInfo"  id="update-info-form">
+              <form id="update-info-form">
                 <div class="form-group">
                   <label class="text-secondary" for="inputPassword">이름</label>
                   <input
@@ -166,7 +166,7 @@ pageEncoding="UTF-8"%>
       updateInfoForm.onsubmit = function (e) {
         e.preventDefault();
         $.ajax({
-          url: "${root}/user/updateinfo",
+          url: "${root}/user/updateInfo",
           method: "post",
           data: $(updateInfoForm).serialize(),
           success: function () {
