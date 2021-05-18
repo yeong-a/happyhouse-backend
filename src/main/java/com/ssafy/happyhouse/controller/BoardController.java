@@ -7,56 +7,50 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.stereotype.Controller;
 
 import com.ssafy.happyhouse.model.service.BoardService;
-
 
 @RequestMapping("/board")
 @Controller
 public class BoardController {
-	
+
 	private BoardService boardService;
-	
+
 	@Autowired
 	public void setBoardService(BoardService boardService) {
 		this.boardService = boardService;
 	}
-	
+
 	@PostMapping("addArticle")
-	private String addArticle(@RequestParam String title,@RequestParam String content)
-			throws SQLException{
+	private String addArticle(@RequestParam String title, @RequestParam String content) throws SQLException {
 		boardService.register(title, content);
 
 		return "redirect:/board/showArticle";
 	}
-	
+
 	@PostMapping("deleteArticle")
-	private String deleteArticle(@RequestParam String bno)
-			throws SQLException, ServletException, IOException {
+	private String deleteArticle(@RequestParam String bno) throws SQLException, ServletException, IOException {
 		boardService.delete(bno);
 		return "redirect:/board/showArticle";
 	}
 
-	
 	@PostMapping("updateArticle")
-	private String updateArticle(@RequestParam String bno,@RequestParam String title,@RequestParam String content) throws SQLException {
-	
+	private String updateArticle(@RequestParam String bno, @RequestParam String title, @RequestParam String content)
+			throws SQLException {
+
 		boardService.update(bno, title, content);
 		return "redirect:/board/showArticle";
 	}
 
 	@RequestMapping("showArticle")
-	private String showArticle(HttpServletRequest request) throws SQLException
-		{
+	private String showArticle(HttpServletRequest request) throws SQLException {
 		request.setAttribute("boardList", boardService.getBoardList());
-		
+
 		return "/notice";
 	}
 
-	
 }
