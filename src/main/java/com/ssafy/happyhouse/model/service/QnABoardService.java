@@ -2,6 +2,7 @@ package com.ssafy.happyhouse.model.service;
 
 import java.util.List;
 
+import com.ssafy.happyhouse.model.dto.Answer;
 import com.ssafy.happyhouse.model.dto.QnA;
 
 public interface QnABoardService {
@@ -14,4 +15,9 @@ public interface QnABoardService {
 	public boolean updateBoard(QnA qna);
 
 	public boolean deleteBoard(int no);
+
+	public List<Answer> selectAnswer(int no);
+
+	public boolean insertAnswer(Answer answer);
+
 }

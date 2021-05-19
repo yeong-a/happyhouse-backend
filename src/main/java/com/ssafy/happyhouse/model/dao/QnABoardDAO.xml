@@ -42,6 +42,22 @@
 		  from qna_board 
 		 where no = #{no}
 	</delete>
+	
+	<!-- 답변 조회 -->
+	<select id="selectAnswer" resultType="Answer">
+		select id, no, writer, content
+		  from qna_answer
+		  where no = #{no}
+	</select>
+	
+	<!-- 답변 등록 -->
+	<insert id="insertAnswer" parameterType="Answer">
+		insert into qna_answer(
+			no, writer, content
+		) values (
+			#{no}, #{writer}, #{content}
+		)
+	</insert>
 
 </mapper>
 

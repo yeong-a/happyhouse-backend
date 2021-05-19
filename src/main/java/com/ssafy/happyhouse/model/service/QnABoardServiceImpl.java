@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.happyhouse.model.dao.QnABoardDAO;
+import com.ssafy.happyhouse.model.dto.Answer;
 import com.ssafy.happyhouse.model.dto.QnA;
 
 @Service
@@ -40,5 +41,15 @@ public class QnABoardServiceImpl implements QnABoardService {
 	@Transactional
 	public boolean deleteBoard(int no) {
 		return qnaBoardDao.deleteQnA(no) > 0;
+	}
+
+	@Override
+	public List<Answer> selectAnswer(int no) {
+		return qnaBoardDao.selectAnswer(no);
+	}
+
+	@Override
+	public boolean insertAnswer(Answer answer) {
+		return qnaBoardDao.insertAnswer(answer) > 0;
 	}
 }

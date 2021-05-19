@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.happyhouse.model.dto.Answer;
 import com.ssafy.happyhouse.model.dto.Board;
 import com.ssafy.happyhouse.model.dto.QnA;
 import com.ssafy.happyhouse.model.service.QnABoardService;
@@ -77,6 +78,22 @@ public class QnARestController {
 	public ResponseEntity<String> deleteBoard(@PathVariable int no) {
 		logger.debug("deleteBoard - 호출");
 		if (qnaBoardService.deleteBoard(no)) {
+			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+	}
+
+	@ApiOperation(value = "글번호에 해당하는 답글 정보를 반환한다.", response = Board.class)
+	@GetMapping("/answer/{no}")
+	public ResponseEntity<List<Answer>> selectAnswer(@PathVariable int no) {
+		return new ResponseEntity<List<Answer>>(qnaBoardService.selectAnswer(no), HttpStatus.OK);
+	}
+
+	@ApiOperation(value = "글번호에 해당하는 답글 정보를 입력한다.", response = Board.class)
+	@PostMapping("/answer/{no}")
+	public ResponseEntity<String> insertAnswer(@RequestBody Answer answer, @PathVariable int no) {
+		answer.setNo(no);
+		if (qnaBoardService.insertAnswer(answer)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
