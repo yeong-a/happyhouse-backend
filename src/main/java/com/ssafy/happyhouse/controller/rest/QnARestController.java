@@ -26,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 //http://localhost:9999/vue/swagger-ui.html
 @CrossOrigin(origins = { "*" }, maxAge = 6000)
 @RestController
-@RequestMapping("/qna")
+@RequestMapping("/qnaboard")
 public class QnARestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(QnARestController.class);
@@ -44,7 +44,7 @@ public class QnARestController {
 	}
 
 	@ApiOperation(value = "글번호에 해당하는 게시글의 정보를 반환한다.", response = Board.class)
-	@GetMapping("{no}")
+	@GetMapping("/{no}")
 	public ResponseEntity<QnA> detailBoard(@PathVariable int no) {
 		logger.debug("detailBoard - 호출");
 		return new ResponseEntity<QnA>(qnaBoardService.detailBoard(no), HttpStatus.OK);
@@ -61,7 +61,7 @@ public class QnARestController {
 	}
 
 	@ApiOperation(value = "글번호에 해당하는 게시글의 정보를 수정한다. 그리고 DB수정 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
-	@PutMapping("{no}")
+	@PutMapping("/{no}")
 	public ResponseEntity<String> updateBoard(@RequestBody QnA qna) {
 		logger.debug("updateBoard - 호출");
 		logger.debug("" + qna);
@@ -73,7 +73,7 @@ public class QnARestController {
 	}
 
 	@ApiOperation(value = "글번호에 해당하는 게시글의 정보를 삭제한다. 그리고 DB삭제 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
-	@DeleteMapping("{no}")
+	@DeleteMapping("/{no}")
 	public ResponseEntity<String> deleteBoard(@PathVariable int no) {
 		logger.debug("deleteBoard - 호출");
 		if (qnaBoardService.deleteBoard(no)) {
