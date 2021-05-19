@@ -79,6 +79,14 @@ pageEncoding="UTF-8"%>
             style="font-size: 16px; font-weight: bold"
             >오늘의 뉴스</a
           >
+        </li>	
+        <li class="nav-item">
+          <a
+            class="nav-link js-scroll-trigger"
+            href="${root }/qna/"
+            style="font-size: 16px; font-weight: bold"
+            >Q&A 게시판</a
+          >
         </li>
         <c:choose>
           <c:when test="${sessionScope.email != null}">
