@@ -162,3 +162,16 @@ export default {
 </script>
 ```
 
+QnA 게시판 버튼을 통해 페이지 이동
+![image](/uploads/59989002e81e3f46ea36431ae90ed826/image.png)
+
+QnA 게시판에는 현재 qna_board에 있는 게시글 정보를 가져와 보여줍니다.
+![image](/uploads/814ff6284bba0e11d0463298a92e5684/image.png)
+
+해당 게시글로 이동하면 content 정보와 하단에 답변을 달 수 있는 창이 나옵니다.
+해당 답글 작성 시 session에 있는 user_name 정보를 통해 작성자명이 자동으로 저장됩니다.
+![image](/uploads/a67cd4fc6066d1c04b5fd3713d3606a2/image.png)
+
+답글 작성 시 해당글 번호, 작성자 정보, 답글 내용을 qna_answer db table에 저장하여 관리합니다. 또한 각 답글을 관리하기위해 id라는 primary key를 생성했습니다.
+![image](/uploads/62a7256a4501b8d37192e5499fb082ec/image.png)
+
