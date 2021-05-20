@@ -34,25 +34,25 @@ public class UserController {
 			throws ServletException, IOException {
 		return "/interests_setting";
 	}
-	
+
 	@RequestMapping("/interestsInfo")
 	private String interestsInfo(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		return "/interests_info";
 	}
-	
+
 	@RequestMapping("/searchPassword")
 	private String searchPassword(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		return "/search_password";
 	}
-	
+
 	@RequestMapping("/mypage")
 	private String mypage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		return "/mypage";
 	}
-	
+
 	@RequestMapping("/signuppage")
 	private String signuppage(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
