@@ -2,8 +2,6 @@ package com.ssafy.happyhouse.controller;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +24,6 @@ import com.ssafy.happyhouse.model.service.QnABoardService;
 @RequestMapping("/qnaboard")
 public class QnARestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(QnARestController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
 
@@ -34,17 +31,17 @@ public class QnARestController {
 	private QnABoardService qnaBoardService;
 
 	@GetMapping
-	public ResponseEntity<List<QnA>> retrieveBoard() throws Exception {
+	public ResponseEntity<List<QnA>> selectQnA() throws Exception {
 		return new ResponseEntity<List<QnA>>(qnaBoardService.retrieveBoard(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{no}")
-	public ResponseEntity<QnA> detailBoard(@PathVariable int no) {
+	public ResponseEntity<QnA> detailQnA(@PathVariable int no) {
 		return new ResponseEntity<QnA>(qnaBoardService.detailBoard(no), HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<String> writeBoard(@RequestBody QnA qna) {
+	public ResponseEntity<String> writeQnA(@RequestBody QnA qna) {
 		if (qnaBoardService.writeBoard(qna)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
@@ -52,9 +49,8 @@ public class QnARestController {
 	}
 
 	@PutMapping("/{no}")
-	public ResponseEntity<String> updateBoard(@RequestBody QnA qna) {
-		logger.debug("" + qna);
-
+	public ResponseEntity<String> updateQnA(@RequestBody QnA qna, @PathVariable int no) {
+		qna.setNo(no);
 		if (qnaBoardService.updateBoard(qna)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
@@ -62,7 +58,7 @@ public class QnARestController {
 	}
 
 	@DeleteMapping("/{no}")
-	public ResponseEntity<String> deleteBoard(@PathVariable int no) {
+	public ResponseEntity<String> deleteQnA(@PathVariable int no) {
 		if (qnaBoardService.deleteBoard(no)) {
 			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 		}
