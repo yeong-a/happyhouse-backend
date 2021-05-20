@@ -49,10 +49,4 @@ public class QnA {
 		this.regtime = regtime;
 	}
 
-	@Override
-	public String toString() {
-		return "Board [no=" + no + ", title=" + title + ", content=" + content + ", writer=" + writer + ", regtime="
-				+ regtime + "]";
-	}
-
 }

@@ -1,14 +1,12 @@
 package com.ssafy.happyhouse.model.dto;
 
-// Model : VO, DTO
-// 회원 정보를 표현
 public class User {
 	private String email;
 	private String name;
 	private String pwd;
 	private String address;
 	private String detailAddress;
-	
+
 	public User(String email, String name, String pwd, String address, String detailAddress) {
 		super();
 		this.email = email;
@@ -56,5 +54,5 @@ public class User {
 
 	public void setDetailAddress(String detailAddress) {
 		this.detailAddress = detailAddress;
-	}	
+	}
 }

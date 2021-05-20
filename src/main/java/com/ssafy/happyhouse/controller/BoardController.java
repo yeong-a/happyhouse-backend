@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,20 +26,20 @@ public class BoardController {
 		this.boardService = boardService;
 	}
 
-	@PostMapping("addArticle")
+	@PostMapping("add")
 	private String addArticle(@RequestParam String title, @RequestParam String content) throws SQLException {
 		boardService.register(title, content);
 
 		return "redirect:/board/showArticle";
 	}
 
-	@PostMapping("deleteArticle")
+	@PostMapping("delete")
 	private String deleteArticle(@RequestParam String bno) throws SQLException, ServletException, IOException {
 		boardService.delete(bno);
 		return "redirect:/board/showArticle";
 	}
 
-	@PostMapping("updateArticle")
+	@PostMapping("update")
 	private String updateArticle(@RequestParam String bno, @RequestParam String title, @RequestParam String content)
 			throws SQLException {
 
@@ -46,7 +47,7 @@ public class BoardController {
 		return "redirect:/board/showArticle";
 	}
 
-	@RequestMapping("showArticle")
+	@GetMapping("/show")
 	private String showArticle(HttpServletRequest request) throws SQLException {
 		request.setAttribute("boardList", boardService.getBoardList());
 
