@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.happyhouse.model.dto.Response;
 import com.ssafy.happyhouse.model.dto.User;
 import com.ssafy.happyhouse.model.service.UserService;
 import com.ssafy.happyhouse.model.service.UserServiceImpl;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @RequestMapping("/user")
@@ -37,104 +39,89 @@ public class UserRestController {
 	}
 
 	@PostMapping("/login")
-	private void login(@RequestBody User userInput, HttpSession session, HttpServletResponse response)
-			throws SQLException {
-		if (session.getAttribute("email") != null) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+	private Object login(@RequestBody User userInput, HttpSession session) throws SQLException {
+		if (userService.login(userInput.getEmail(), userInput.getPwd()) == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "아이디나 비밀번호가 일치하지 않습니다.");
 		}
-
-		User user = userService.login(userInput.getEmail(), userInput.getPwd());
-
-		if (user == null) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		if (user.isAdmin()) {
-			session.setAttribute("isAdmin", true);
-		} else {
-			session.setAttribute("isAdmin", false);
-		}
-
+		User user = userService.getUser(userInput.getEmail());
+		session.setAttribute("isAdmin", user.isAdmin());
 		session.setAttribute("email", user.getEmail());
 		session.setAttribute("name", user.getName());
-		response.setStatus(HttpServletResponse.SC_OK);
+		return new ResponseEntity<Object>(null, HttpStatus.OK);
 	}
 
 	@PutMapping("/update")
-	private void updateInfo(@RequestBody User user, HttpSession session, HttpServletResponse response)
+	private Object modifyInfo(@RequestBody User user, HttpSession session, HttpServletResponse response)
 			throws SQLException {
-		if (user.getEmail().equals(session.getAttribute("email"))) {
-			String email = user.getEmail();
-			String name = user.getName();
-			String address = user.getAddress();
-			String detailAddress = user.getDetailAddress();
-
-			if (userService.update(email, name, address, detailAddress)) {
-				response.setStatus(HttpServletResponse.SC_OK);
-				return;
-			} else {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return;
-			}
+		if (session.getAttribute("email") == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
 		}
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		if (!user.getEmail().equals(session.getAttribute("email"))) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "자신의 정보만 수정 가능합니다.");
+		}
+		String email = user.getEmail();
+		String name = user.getName();
+		String address = user.getAddress();
+		String detailAddress = user.getDetailAddress();
+
+		if (userService.updateUser(email, name, address, detailAddress)) {
+			return new ResponseEntity<Object>(null, HttpStatus.OK);
+		}
+		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");
 	}
 
 	@Data
-	@AllArgsConstructor
 	static class ChangePasswordRequest {
 		String currentPwd;
 		String newPwd;
 	}
 
 	@PutMapping("/changepwd")
-	private void changePassword(@RequestBody ChangePasswordRequest request, HttpSession session,
-			HttpServletResponse response) throws SQLException {
-		ChangePasswordRequest cpr = new ChangePasswordRequest(request.currentPwd, request.newPwd);
+	private Object changePassword(@RequestBody ChangePasswordRequest request, HttpSession session) throws SQLException {
+		if (session.getAttribute("email") == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+		}
+		if (request.currentPwd == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "현재 비밀번호를 입력해주세요.");
+		}
+		if (request.newPwd == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "새 비밀번호를 입력해주세요.");
+		}
 		User user = userService.getUser((String) session.getAttribute("email"));
-		if (user == null) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+		if (!request.getCurrentPwd().equals(user.getPwd())) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "현재 비밀번호가 틀렸습니다.");
 		}
-		if (cpr.getCurrentPwd().equals(user.getPwd())) {
-			if (userService.changePassword((String) session.getAttribute("email"), cpr.getNewPwd())) {
-				response.setStatus(HttpServletResponse.SC_OK);
-				return;
-			}
+		if (userService.updatePassword((String) session.getAttribute("email"), request.getNewPwd())) {
+			return new ResponseEntity<Object>(null, HttpStatus.OK);
 		}
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");
 	}
 
 	@PostMapping("/signup")
-	private void signup(@RequestBody User user, HttpSession session, HttpServletResponse response) throws SQLException {
-		if (session.getAttribute("email") == null) {
-			if (userService.signup(user)) {
-				response.setStatus(HttpServletResponse.SC_OK);
-				return;
-			} else {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				return;
-			}
+	private Object signup(@RequestBody User user, HttpSession session, HttpServletResponse response)
+			throws SQLException {
+		if (session.getAttribute("email") != null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "로그아웃을 먼저 해주세요.");
 		}
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		if (userService.getUser(user.getEmail()) != null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "이미 존재하는 email 입니다.");
+		}
+		if (userService.signup(user)) {
+			return new ResponseEntity<Object>(null, HttpStatus.OK);
+		}
+		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");
 	}
 
 	@DeleteMapping("/delete")
-	private void delete(HttpSession session, HttpServletResponse response) throws SQLException {
-
+	private Object deleteInfo(HttpSession session, HttpServletResponse response) throws SQLException {
 		String email = (String) session.getAttribute("email");
 		if (email == null) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
 		}
-
-		if (userService.delete(email)) {
+		if (userService.deleteUser(email)) {
 			session.invalidate();
-			response.setStatus(HttpServletResponse.SC_OK);
-			return;
+			return new ResponseEntity<Object>(null, HttpStatus.OK);
 		}
-		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");
 	}
 }

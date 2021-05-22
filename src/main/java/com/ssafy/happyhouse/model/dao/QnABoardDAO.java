@@ -5,21 +5,21 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.happyhouse.model.dto.Answer;
-import com.ssafy.happyhouse.model.dto.QnA;
+import com.ssafy.happyhouse.model.dto.Question;
 
 @Mapper
 public interface QnABoardDAO {
-	public List<QnA> selectQnA();
+	public List<Question> selectQuestions();
 
-	public QnA selectQnAByNo(int no);
+	public Question selectQuestionByNo(int no);
 
-	public int insertQnA(QnA qna);
+	public int insertQuestion(Question qna);
 
-	public int updateQnA(QnA qna);
+	public int updateQuestion(Question qna);
 
-	public int deleteQnA(int no);
+	public int deleteQuestion(int no);
 
-	public List<Answer> selectAnswer(int no);
+	public List<Answer> selectAnswers(int no);
 
 	public int insertAnswer(Answer answer);
 

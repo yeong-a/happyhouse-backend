@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.happyhouse.model.dao.QnABoardDAO;
 import com.ssafy.happyhouse.model.dto.Answer;
-import com.ssafy.happyhouse.model.dto.QnA;
+import com.ssafy.happyhouse.model.dto.Question;
 
 @Service
 public class QnABoardServiceImpl implements QnABoardService {
@@ -17,39 +17,39 @@ public class QnABoardServiceImpl implements QnABoardService {
 	private QnABoardDAO qnaBoardDao;
 
 	@Override
-	public List<QnA> retrieveBoard() {
-		return qnaBoardDao.selectQnA();
+	public List<Question> getQuestions() {
+		return qnaBoardDao.selectQuestions();
 	}
 
 	@Override
-	public boolean writeQnA(QnA board) {
-		return qnaBoardDao.insertQnA(board) > 0;
+	public Question getQuestion(int no) {
+		return qnaBoardDao.selectQuestionByNo(no);
 	}
 
 	@Override
-	public QnA detailQnA(int no) {
-		return qnaBoardDao.selectQnAByNo(no);
-	}
-
-	@Override
-	@Transactional
-	public boolean updateQnA(QnA board) {
-		return qnaBoardDao.updateQnA(board) > 0;
+	public boolean createQuestion(Question question) {
+		return qnaBoardDao.insertQuestion(question) > 0;
 	}
 
 	@Override
 	@Transactional
-	public boolean deleteQnA(int no) {
-		return qnaBoardDao.deleteQnA(no) > 0;
+	public boolean updateQustion(Question question) {
+		return qnaBoardDao.updateQuestion(question) > 0;
 	}
 
 	@Override
-	public List<Answer> selectAnswer(int no) {
-		return qnaBoardDao.selectAnswer(no);
+	@Transactional
+	public boolean deleteQuestion(int no) {
+		return qnaBoardDao.deleteQuestion(no) > 0;
 	}
 
 	@Override
-	public boolean insertAnswer(Answer answer) {
+	public List<Answer> getAnswers(int no) {
+		return qnaBoardDao.selectAnswers(no);
+	}
+
+	@Override
+	public boolean createAnswer(Answer answer) {
 		return qnaBoardDao.insertAnswer(answer) > 0;
 	}
 

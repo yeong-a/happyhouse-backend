@@ -3,22 +3,22 @@ package com.ssafy.happyhouse.model.service;
 import java.util.List;
 
 import com.ssafy.happyhouse.model.dto.Answer;
-import com.ssafy.happyhouse.model.dto.QnA;
+import com.ssafy.happyhouse.model.dto.Question;
 
 public interface QnABoardService {
-	public List<QnA> retrieveBoard();
+	public List<Question> getQuestions();
 
-	public QnA detailQnA(int no);
+	public Question getQuestion(int no);
 
-	public boolean writeQnA(QnA qna);
+	public boolean createQuestion(Question qna);
 
-	public boolean updateQnA(QnA qna);
+	public boolean updateQustion(Question qna);
 
-	public boolean deleteQnA(int no);
+	public boolean deleteQuestion(int no);
 
-	public List<Answer> selectAnswer(int no);
+	public List<Answer> getAnswers(int no);
 
-	public boolean insertAnswer(Answer answer);
+	public boolean createAnswer(Answer answer);
 
 	public String getEmail(int no);
 }
