@@ -7,16 +7,18 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.happyhouse.model.dto.User;
 import com.ssafy.happyhouse.model.service.UserService;
 import com.ssafy.happyhouse.model.service.UserServiceImpl;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @RequestMapping("/user")
 @RestController
@@ -35,83 +37,104 @@ public class UserRestController {
 	}
 
 	@PostMapping("/login")
-	private boolean login(@ModelAttribute User user, HttpSession session, HttpServletResponse response)
+	private void login(@RequestBody User userInput, HttpSession session, HttpServletResponse response)
 			throws SQLException {
-
-		String name = userService.login(user.getEmail(), user.getPwd());
-
-		if (name == null) {
+		if (session.getAttribute("email") != null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return true;
+			return;
+		}
+
+		User user = userService.login(userInput.getEmail(), userInput.getPwd());
+
+		if (user == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		if (user.isAdmin()) {
+			session.setAttribute("isAdmin", true);
+		} else {
+			session.setAttribute("isAdmin", false);
 		}
 
 		session.setAttribute("email", user.getEmail());
-		session.setAttribute("name", name);
+		session.setAttribute("name", user.getName());
 		response.setStatus(HttpServletResponse.SC_OK);
-		return true;
 	}
 
 	@PutMapping("/update")
-	private boolean updateInfo(@ModelAttribute User user, HttpSession session, HttpServletResponse response)
+	private void updateInfo(@RequestBody User user, HttpSession session, HttpServletResponse response)
 			throws SQLException {
+		if (user.getEmail().equals(session.getAttribute("email"))) {
+			String email = user.getEmail();
+			String name = user.getName();
+			String address = user.getAddress();
+			String detailAddress = user.getDetailAddress();
 
-		String email = user.getEmail();
-		String name = user.getName();
-		String address = user.getAddress();
-		String detailAddress = user.getDetailAddress();
-
-		if (userService.update(email, name, address, detailAddress)) {
-			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			if (userService.update(email, name, address, detailAddress)) {
+				response.setStatus(HttpServletResponse.SC_OK);
+				return;
+			} else {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
 		}
-		return true;
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
+
+	@Data
+	@AllArgsConstructor
+	static class ChangePasswordRequest {
+		String currentPwd;
+		String newPwd;
 	}
 
 	@PutMapping("/changepwd")
-	private boolean changePassword(@RequestParam(value = "current_password") String currentPassword,
-			@RequestParam String password, HttpSession session, HttpServletResponse response) throws SQLException {
-
-		String email = (String) session.getAttribute("email");
-
-		User user = userService.getUser(email);
-		if (!user.getPwd().equals(currentPassword)) {
+	private void changePassword(@RequestBody ChangePasswordRequest request, HttpSession session,
+			HttpServletResponse response) throws SQLException {
+		ChangePasswordRequest cpr = new ChangePasswordRequest(request.currentPwd, request.newPwd);
+		User user = userService.getUser((String) session.getAttribute("email"));
+		if (user == null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return true;
+			return;
 		}
-
-		if (userService.changePassword(email, password)) {
-			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		if (cpr.getCurrentPwd().equals(user.getPwd())) {
+			if (userService.changePassword((String) session.getAttribute("email"), cpr.getNewPwd())) {
+				response.setStatus(HttpServletResponse.SC_OK);
+				return;
+			}
 		}
-		return true;
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	}
 
 	@PostMapping("/signup")
-	private boolean signup(@ModelAttribute User user, HttpSession session, HttpServletResponse response)
-			throws SQLException {
-
-		if (userService.signup(user)) {
-			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	private void signup(@RequestBody User user, HttpSession session, HttpServletResponse response) throws SQLException {
+		if (session.getAttribute("email") == null) {
+			if (userService.signup(user)) {
+				response.setStatus(HttpServletResponse.SC_OK);
+				return;
+			} else {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				return;
+			}
 		}
-		return true;
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	}
 
 	@DeleteMapping("/delete")
-	private boolean delete(HttpSession session, HttpServletResponse response) throws SQLException {
+	private void delete(HttpSession session, HttpServletResponse response) throws SQLException {
 
 		String email = (String) session.getAttribute("email");
+		if (email == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
 
 		if (userService.delete(email)) {
 			session.invalidate();
 			response.setStatus(HttpServletResponse.SC_OK);
-		} else {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			return;
 		}
-		return true;
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 	}
-
 }

@@ -6,14 +6,14 @@
 
 	<!-- 게시글 전체 조회 -->
 	<select id="selectQnA" resultType="qna">
-		select no, title, writer, content, regtime
+		select *
 		  from qna_board 
 		 order by no desc
 	</select>
 	
 	<!-- 게시글 상세 조회 -->
 	<select id="selectQnAByNo" resultType="qna">
-		select no, title, writer, content, regtime
+		select *
 		  from qna_board 
 		 where no = #{no}
 	</select>
@@ -21,9 +21,9 @@
 	<!-- 게시글 등록 -->
 	<insert id="insertQnA" parameterType="qna">
 		insert into qna_board(
-			title, writer, content
+			title, writer, content, email
 		) values (
-			#{title}, #{writer}, #{content}
+			#{title}, #{writer}, #{content}, #{email}
 		)
 	</insert>
 	
@@ -31,7 +31,6 @@
 	<update id="updateQnA" parameterType="qna">
 		update qna_board 
 		   set title = #{title}, 
-		   	   writer = #{writer}, 
 		   	   content = #{content}
 		 where no = #{no}
 	</update>
@@ -58,6 +57,11 @@
 			#{no}, #{writer}, #{content}
 		)
 	</insert>
+	
+	<select id="getEmail" parameterType="int" resultType="string">
+		select email from qna_board
+		where no = #{no}
+	</select>
 
 </mapper>
 

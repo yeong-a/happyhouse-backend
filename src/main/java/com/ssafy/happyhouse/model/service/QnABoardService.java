@@ -8,16 +8,17 @@ import com.ssafy.happyhouse.model.dto.QnA;
 public interface QnABoardService {
 	public List<QnA> retrieveBoard();
 
-	public QnA detailBoard(int no);
+	public QnA detailQnA(int no);
 
-	public boolean writeBoard(QnA qna);
+	public boolean writeQnA(QnA qna);
 
-	public boolean updateBoard(QnA qna);
+	public boolean updateQnA(QnA qna);
 
-	public boolean deleteBoard(int no);
+	public boolean deleteQnA(int no);
 
 	public List<Answer> selectAnswer(int no);
 
 	public boolean insertAnswer(Answer answer);
 
+	public String getEmail(int no);
 }

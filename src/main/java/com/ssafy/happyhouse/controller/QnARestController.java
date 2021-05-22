@@ -2,6 +2,9 @@ package com.ssafy.happyhouse.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,33 +39,53 @@ public class QnARestController {
 	}
 
 	@GetMapping("/{no}")
-	public ResponseEntity<QnA> detailQnA(@PathVariable int no) {
-		return new ResponseEntity<QnA>(qnaBoardService.detailBoard(no), HttpStatus.OK);
+	public ResponseEntity<String> detailQnA(@PathVariable int no) {
+		if (qnaBoardService.detailQnA(no) == null) {
+			return new ResponseEntity<String>("게시글이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<String> writeQnA(@RequestBody QnA qna) {
-		if (qnaBoardService.writeBoard(qna)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+	public ResponseEntity<String> writeQnA(HttpSession session, @RequestBody QnA qna) {
+		if (session.getAttribute("name") != null) {
+			qna.setWriter((String) session.getAttribute("name"));
+			qna.setEmail((String) session.getAttribute("email"));
+			if (qnaBoardService.writeQnA(qna)) {
+				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			}
+			return new ResponseEntity<String>(FAIL, HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		return new ResponseEntity<String>("로그인 필요", HttpStatus.BAD_REQUEST);
 	}
 
 	@PutMapping("/{no}")
-	public ResponseEntity<String> updateQnA(@RequestBody QnA qna, @PathVariable int no) {
-		qna.setNo(no);
-		if (qnaBoardService.updateBoard(qna)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+	public ResponseEntity<String> updateQnA(@RequestBody QnA qna, HttpSession session, @PathVariable int no) {
+		if (session.getAttribute("email") == null) {
+			return new ResponseEntity<String>("로그인 필요", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		if (qnaBoardService.getEmail(no).equals(session.getAttribute("email"))) {
+			qna.setNo(no);
+			if (qnaBoardService.updateQnA(qna)) {
+				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			}
+			return new ResponseEntity<String>(FAIL, HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<String>("작성자 다름", HttpStatus.BAD_REQUEST);
 	}
 
 	@DeleteMapping("/{no}")
-	public ResponseEntity<String> deleteQnA(@PathVariable int no) {
-		if (qnaBoardService.deleteBoard(no)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+	public ResponseEntity<String> deleteQnA(HttpSession session, @PathVariable int no) {
+		if (session.getAttribute("email") == null) {
+			return new ResponseEntity<String>("로그인 필요", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		if (qnaBoardService.getEmail(no).equals(session.getAttribute("email"))) {
+			if (qnaBoardService.deleteQnA(no)) {
+				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			}
+			return new ResponseEntity<String>(FAIL, HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<String>("작성자 다름", HttpStatus.BAD_REQUEST);
 	}
 
 	@GetMapping("/answer/{no}")
@@ -71,11 +94,23 @@ public class QnARestController {
 	}
 
 	@PostMapping("/answer/{no}")
-	public ResponseEntity<String> insertAnswer(@RequestBody Answer answer, @PathVariable int no) {
-		answer.setNo(no);
-		if (qnaBoardService.insertAnswer(answer)) {
-			return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+	public ResponseEntity<String> insertAnswer(HttpSession session, HttpServletResponse response,
+			@RequestBody Answer answer, @PathVariable int no) {
+		if (session.getAttribute("email") == null) {
+			return new ResponseEntity<String>("로그인 필요", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
+		if (qnaBoardService.detailQnA(no) == null) {
+			return new ResponseEntity<String>("해당번호 게시물 없음", HttpStatus.BAD_REQUEST);
+		}
+		if (((boolean) session.getAttribute("isAdmin"))) {
+			answer.setNo(no);
+			answer.setWriter("admin");
+			if (qnaBoardService.insertAnswer(answer)) {
+				return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<String>(FAIL, HttpStatus.BAD_REQUEST);
+			}
+		}
+		return new ResponseEntity<String>("관리자가 아닙니다.", HttpStatus.BAD_REQUEST);
 	}
 }

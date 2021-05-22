@@ -3,8 +3,6 @@ package com.ssafy.happyhouse.controller;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,16 +24,15 @@ public class HouseController {
 		this.houseService = houseService;
 	}
 
-	@GetMapping("/detail")
-	private ResponseEntity<List<House>> getHouseListByName(@RequestParam String aptName) throws SQLException {
-		List<House> houseList = houseService.getHouseListByName(aptName);
+	@GetMapping("/search")
+	private ResponseEntity<List<House>> getHouseList(@RequestParam String dong) throws SQLException {
+		List<House> houseList = houseService.getHouseList(dong);
 		return new ResponseEntity<List<House>>(houseList, HttpStatus.OK);
 	}
 
-	@GetMapping("/search")
-	private ResponseEntity<List<House>> getHouseList(@RequestParam String sido, @RequestParam String gugun,
-			@RequestParam String dong, @RequestParam String type, HttpServletRequest request) throws SQLException {
-		List<House> houseList = houseService.getHouseList(dong);
+	@GetMapping("/detail")
+	private ResponseEntity<List<House>> getHouseListByName(@RequestParam String aptName) throws SQLException {
+		List<House> houseList = houseService.getHouseListByName(aptName);
 		return new ResponseEntity<List<House>>(houseList, HttpStatus.OK);
 	}
 }

@@ -13,8 +13,9 @@ import com.ssafy.happyhouse.model.dto.User;
 
 @Service
 public class UserServiceImpl implements UserService {
-	
+
 	private UserDAO userDAO;
+
 	@Autowired
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
@@ -38,15 +39,16 @@ public class UserServiceImpl implements UserService {
 
 	// 로그인
 	@Override
-	public String login(String email, String pwd) throws SQLException {
+	public User login(String email, String pwd) throws SQLException {
 		User user = getUser(email);
-		if (user == null)
-			return null;	// 이메일 일치하지 않음
-
-		if (user.getPwd().equals(pwd))
-			return user.getName();
-		else
-			return null;	// 비번 틀림
+		if (user == null) {
+			return null; // 이메일 일치하지 않음
+		}
+		if (user.getPwd().equals(pwd)) {
+			return user;
+		} else {
+			return null; // 비번 틀림
+		}
 	}
 
 	@Override

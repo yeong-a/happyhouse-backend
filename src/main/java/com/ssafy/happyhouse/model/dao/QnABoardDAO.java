@@ -22,4 +22,6 @@ public interface QnABoardDAO {
 	public List<Answer> selectAnswer(int no);
 
 	public int insertAnswer(Answer answer);
+
+	public String getEmail(int no);
 }

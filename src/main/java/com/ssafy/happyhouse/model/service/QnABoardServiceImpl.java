@@ -22,24 +22,24 @@ public class QnABoardServiceImpl implements QnABoardService {
 	}
 
 	@Override
-	public boolean writeBoard(QnA board) {
+	public boolean writeQnA(QnA board) {
 		return qnaBoardDao.insertQnA(board) > 0;
 	}
 
 	@Override
-	public QnA detailBoard(int no) {
+	public QnA detailQnA(int no) {
 		return qnaBoardDao.selectQnAByNo(no);
 	}
 
 	@Override
 	@Transactional
-	public boolean updateBoard(QnA board) {
+	public boolean updateQnA(QnA board) {
 		return qnaBoardDao.updateQnA(board) > 0;
 	}
 
 	@Override
 	@Transactional
-	public boolean deleteBoard(int no) {
+	public boolean deleteQnA(int no) {
 		return qnaBoardDao.deleteQnA(no) > 0;
 	}
 
@@ -51,5 +51,10 @@ public class QnABoardServiceImpl implements QnABoardService {
 	@Override
 	public boolean insertAnswer(Answer answer) {
 		return qnaBoardDao.insertAnswer(answer) > 0;
+	}
+
+	@Override
+	public String getEmail(int no) {
+		return qnaBoardDao.getEmail(no);
 	}
 }
