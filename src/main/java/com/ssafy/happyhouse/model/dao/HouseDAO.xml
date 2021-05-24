@@ -56,5 +56,4 @@
 		from houseinfo
 		where AptName = #{aptName}
 	</select>
-	
 </mapper>

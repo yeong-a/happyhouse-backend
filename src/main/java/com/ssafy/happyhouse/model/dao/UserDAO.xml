@@ -41,4 +41,13 @@
 		where email = #{email}
 	</delete>
 	
+	<select id="getFavoriteDong" parameterType="String" resultType="String">
+		select dong from favorites
+		where email = #{email}
+	</select>
+	
+	<insert id="addFavoriteDong" parameterType="favorite">
+		insert into favorites (email, dong)
+		values (#{email}, #{dong})
+	</insert>
 </mapper>

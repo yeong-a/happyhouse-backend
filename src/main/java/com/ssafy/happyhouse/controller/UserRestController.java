@@ -1,22 +1,28 @@
 package com.ssafy.happyhouse.controller;
 
 import java.sql.SQLException;
+import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.happyhouse.model.dto.Favorite;
+import com.ssafy.happyhouse.model.dto.House;
 import com.ssafy.happyhouse.model.dto.Response;
 import com.ssafy.happyhouse.model.dto.User;
+import com.ssafy.happyhouse.model.service.HouseService;
+import com.ssafy.happyhouse.model.service.HouseServiceImpl;
 import com.ssafy.happyhouse.model.service.UserService;
 import com.ssafy.happyhouse.model.service.UserServiceImpl;
 
@@ -27,10 +33,16 @@ import lombok.Data;
 public class UserRestController {
 
 	private UserService userService = new UserServiceImpl();
+	private HouseService houseService = new HouseServiceImpl();
 
 	@Autowired
 	public void setUserService(UserService userService) {
 		this.userService = userService;
+	}
+
+	@Autowired
+	public void setHouseService(HouseService houseService) {
+		this.houseService = houseService;
 	}
 
 	@RequestMapping("/logout")
@@ -51,12 +63,11 @@ public class UserRestController {
 	}
 
 	@PutMapping("/update")
-	private Object modifyInfo(@RequestBody User user, HttpSession session, HttpServletResponse response)
-			throws SQLException {
+	private Object modifyInfo(@RequestBody User user, HttpSession session) throws SQLException {
 		if (session.getAttribute("email") == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
 		}
-		if (!user.getEmail().equals(session.getAttribute("email"))) {
+		if (!session.getAttribute("email").equals(user.getEmail())) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "자신의 정보만 수정 가능합니다.");
 		}
 		String email = user.getEmail();
@@ -81,7 +92,7 @@ public class UserRestController {
 		if (session.getAttribute("email") == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
 		}
-		if (request.currentPwd == null) {
+		if (request.getCurrentPwd() == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "현재 비밀번호를 입력해주세요.");
 		}
 		if (request.newPwd == null) {
@@ -98,8 +109,7 @@ public class UserRestController {
 	}
 
 	@PostMapping("/signup")
-	private Object signup(@RequestBody User user, HttpSession session, HttpServletResponse response)
-			throws SQLException {
+	private Object signup(@RequestBody User user, HttpSession session) throws SQLException {
 		if (session.getAttribute("email") != null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "로그아웃을 먼저 해주세요.");
 		}
@@ -113,13 +123,67 @@ public class UserRestController {
 	}
 
 	@DeleteMapping("/delete")
-	private Object deleteInfo(HttpSession session, HttpServletResponse response) throws SQLException {
+	private Object deleteInfo(HttpSession session) throws SQLException {
 		String email = (String) session.getAttribute("email");
 		if (email == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
 		}
 		if (userService.deleteUser(email)) {
 			session.invalidate();
+			return new ResponseEntity<Object>(null, HttpStatus.OK);
+		}
+		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");
+	}
+
+	@GetMapping("/favorites")
+	private ResponseEntity<Response> viewFavorites(HttpSession session) throws SQLException {
+		String email = (String) session.getAttribute("email");
+		if (email == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+		}
+		List<String> dong = userService.getFavoriteDong(email);
+		if (dong.size() == 0) {
+			return Response.newResult(HttpStatus.NO_CONTENT, dong);
+		}
+		return Response.newResult(HttpStatus.OK, dong);
+	}
+
+	@GetMapping("/favorites/houses")
+	private ResponseEntity<Response> viewFavoriteHouses(HttpSession session, @RequestParam String dong)
+			throws SQLException {
+		String email = (String) session.getAttribute("email");
+		if (email == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+		}
+		if (dong == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "동이름을 입력해주세요");
+		}
+		List<House> houses = houseService.getHouseList(dong);
+		if (houses.size() == 0) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "결과가 없습니다.");
+		}
+		return Response.newResult(HttpStatus.OK, houses);
+	}
+
+	@PostMapping("/favorites")
+	private Object addFavorite(HttpSession session, @RequestBody Favorite favorite) throws SQLException {
+		String email = (String) session.getAttribute("email");
+		if (email == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+		}
+		if (favorite.getDong() == null) {
+			return Response.newError(HttpStatus.BAD_REQUEST, "동이름을 입력해주세요");
+		}
+		List<String> list = userService.getFavoriteDong(email);
+		if (!list.isEmpty()) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).equals(favorite.getDong())) {
+					return Response.newError(HttpStatus.BAD_REQUEST, "이미 관심지역에 등록된 지역입니다.");
+				}
+			}
+		}
+		favorite.setEmail(email);
+		if (userService.addFavoriteDong(favorite)) {
 			return new ResponseEntity<Object>(null, HttpStatus.OK);
 		}
 		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");

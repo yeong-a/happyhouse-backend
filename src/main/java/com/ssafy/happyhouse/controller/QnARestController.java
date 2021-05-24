@@ -100,7 +100,7 @@ public class QnARestController {
 		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");
 	}
 
-	@GetMapping("/answer/{no}")
+	@GetMapping("/{no}/answers")
 	public ResponseEntity<Response> getAnswers(@PathVariable int no) {
 		if (qnaBoardService.getQuestion(no) == null) {
 			return Response.newError(HttpStatus.NOT_FOUND, "게시물이 존재하지 않습니다.");
@@ -108,7 +108,7 @@ public class QnARestController {
 		return Response.newResult(HttpStatus.OK, qnaBoardService.getAnswers(no));
 	}
 
-	@PostMapping("/answer/{no}")
+	@PostMapping("/{no}/answers")
 	public Object writeAnswer(HttpSession session, @RequestBody Answer answer, @PathVariable int no) {
 		if (session.getAttribute("email") == null) {
 			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");

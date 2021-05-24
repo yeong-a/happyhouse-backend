@@ -1,11 +1,13 @@
 package com.ssafy.happyhouse.model.service;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.happyhouse.model.dao.UserDAO;
+import com.ssafy.happyhouse.model.dto.Favorite;
 import com.ssafy.happyhouse.model.dto.User;
 
 @Service
@@ -54,5 +56,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean deleteUser(String email) throws SQLException {
 		return userDAO.delete(getUser(email)) > 0;
+	}
+
+	@Override
+	public List<String> getFavoriteDong(String email) throws SQLException {
+		return userDAO.getFavoriteDong(email);
+	}
+
+	@Override
+	public boolean addFavoriteDong(Favorite favorite) {
+		return userDAO.addFavoriteDong(favorite) > 0;
 	}
 }
