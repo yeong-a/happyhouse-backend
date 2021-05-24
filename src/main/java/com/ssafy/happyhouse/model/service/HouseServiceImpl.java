@@ -53,11 +53,10 @@ public class HouseServiceImpl implements HouseService {
 
 	@Override
 	public List<HouseInfo> searchAround(double lat, double lng, int distance) throws SQLException {
-		List<HouseInfo> list = getAllAddress();
-		ArrayList<HouseInfo> result = new ArrayList<>();
-		for (int i = 0; i < list.size(); i++) {
-			HouseInfo house = list.get(i);
-			if (distance >= distance(lat, lng, Double.parseDouble(house.getLat()),
+		List<HouseInfo> houses = getAllAddress();
+		List<HouseInfo> result = new ArrayList<>();
+		for (HouseInfo house : houses) {
+			if (distance >= getDistance(lat, lng, Double.parseDouble(house.getLat()),
 					Double.parseDouble(house.getLng()))) {
 				result.add(house);
 			}
@@ -65,7 +64,7 @@ public class HouseServiceImpl implements HouseService {
 		return result;
 	}
 
-	public static double distance(double startLat, double startLong, double endLat, double endLong) {
+	private double getDistance(double startLat, double startLong, double endLat, double endLong) {
 
 		double dLat = Math.toRadians((endLat - startLat));
 		double dLong = Math.toRadians((endLong - startLong));
@@ -79,7 +78,7 @@ public class HouseServiceImpl implements HouseService {
 		return 6371000 * c;
 	}
 
-	public static double haversine(double val) {
+	private static double haversine(double val) {
 		return Math.pow(Math.sin(val / 2), 2);
 	}
 }

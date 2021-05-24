@@ -47,7 +47,7 @@ public class HouseController {
 	}
 
 	@GetMapping("/search-around")
-	public ResponseEntity<Response> search(@RequestParam Double lat, @RequestParam Double lng,
+	public ResponseEntity<Response> searchAround(@RequestParam Double lat, @RequestParam Double lng,
 			@RequestParam Integer distance) throws SQLException {
 		return Response.newResult(HttpStatus.OK, houseService.searchAround(lat, lng, distance));
 	}
