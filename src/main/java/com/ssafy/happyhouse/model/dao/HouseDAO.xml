@@ -4,56 +4,39 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
-<mapper namespace="com.ssafy.happyhouse.model.dao.HouseDAO">	
-
-	<resultMap type="HouseInfo" id="HouseInfoResultMap">
-		<id column="no" property="no"/>
-		<result column="dong" property="dong"/>
-		<result column="AptName" property="aptName"/>
-		<result column="code" property="code"/>
-		<result column="buildYear" property="buildYear"/>
-		<result column="jibun" property="jibun"/>
-		<result column="lat" property="lat"/>
-		<result column="lng" property="lng"/>
-	</resultMap>
+<mapper namespace="com.ssafy.happyhouse.model.dao.HouseDAO">
 	
-	<resultMap type="HouseDeal" id="HouseDealResultMap">
-		<id column="no" property="no"/>
-		<result column="dong" property="dong"/>
-		<result column="AptName" property="aptName"/>
-		<result column="code" property="code"/>
-		<result column="dealAmount" property="dealAmount"/>
-		<result column="buildYear" property="buildYear"/>
-		<result column="dealYear" property="dealYear"/>
-		<result column="dealMonth" property="dealMonth"/>
-		<result column="dealDay" property="dealDay"/>
-		<result column="area" property="area"/>
-		<result column="floor" property="floor"/>
-		<result column="jibun" property="jibun"/>
-		<result column="type" property="type"/>
-	</resultMap>
+	<select id="selectAllAddress" resultType="HouseInfo">
+		select * 
+		from houseinfo
+	</select>
 	
-	<select id="selectAddress" parameterType="String" resultMap="HouseInfoResultMap">
+	<select id="selectAddressByDong" parameterType="String" resultType="HouseInfo">
 		select *
 		from houseinfo
 		where dong = #{dong}
 	</select>
 	
-	<select id="selectTransaction" parameterType="String" resultMap="HouseDealResultMap">
+	<select id="selectAddressByName" parameterType="String" resultType="HouseInfo">
+		select *
+		from houseinfo
+		where AptName = #{aptName}
+	</select>
+	
+	<select id="selectAllTransaction" resultType="HouseDeal">
+		select *
+		from housedeal
+	</select>
+	
+	<select id="selectTransactionByDong" parameterType="String" resultType="HouseDeal">
 		select *
 		from housedeal
 		where dong = #{dong}
 	</select>
 	
-	<select id="selectTransactionByName" parameterType="String" resultMap="HouseDealResultMap">
+	<select id="selectTransactionByName" parameterType="String" resultType="HouseDeal">
 		select * 
 		from housedeal 
-		where AptName = #{aptName}
-	</select>
-	
-	<select id="selectAddressByName" parameterType="String" resultMap="HouseInfoResultMap">
-		select *
-		from houseinfo
 		where AptName = #{aptName}
 	</select>
 </mapper>

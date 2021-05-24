@@ -21,14 +21,19 @@ import com.ssafy.happyhouse.model.dto.Answer;
 import com.ssafy.happyhouse.model.dto.Question;
 import com.ssafy.happyhouse.model.dto.Response;
 import com.ssafy.happyhouse.model.service.QnABoardService;
+import com.ssafy.happyhouse.model.service.QnABoardServiceImpl;
 
 @CrossOrigin(origins = { "*" }, maxAge = 6000)
 @RestController
 @RequestMapping("/qnaboard")
 public class QnARestController {
 
+	private QnABoardService qnaBoardService = new QnABoardServiceImpl();
+
 	@Autowired
-	private QnABoardService qnaBoardService;
+	public void setMapService(QnABoardService qnaBoardService) {
+		this.qnaBoardService = qnaBoardService;
+	}
 
 	@GetMapping()
 	public ResponseEntity<Response> getQuestions() {

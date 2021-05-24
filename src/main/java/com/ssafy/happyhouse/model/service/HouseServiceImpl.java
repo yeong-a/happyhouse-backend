@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.happyhouse.model.dao.HouseDAO;
-import com.ssafy.happyhouse.model.dto.House;
 import com.ssafy.happyhouse.model.dto.HouseDeal;
 import com.ssafy.happyhouse.model.dto.HouseInfo;
 
@@ -23,48 +22,64 @@ public class HouseServiceImpl implements HouseService {
 	}
 
 	@Override
-	public List<House> getHouseList(String dong) throws SQLException {
-		ArrayList<HouseDeal> houseDeal = (ArrayList<HouseDeal>) houseDAO.selectTransaction(dong);
-		ArrayList<HouseInfo> houseInfo = (ArrayList<HouseInfo>) houseDAO.selectAddress(dong);
-		ArrayList<House> list = new ArrayList<>();
-
-		for (HouseDeal hd : houseDeal) {
-			String lat = null, lng = null;
-			for (HouseInfo hi : houseInfo) {
-				if (hd.getAptName().equals(hi.getAptName())) {
-					lat = hi.getLat();
-					lng = hi.getLng();
-					break;
-				}
-			}
-			list.add(new House(hd.getDong(), hd.getAptName(), hd.getDealAmount(), hd.getBuildYear(), hd.getDealYear(),
-					hd.getDealMonth(), hd.getDealDay(), hd.getArea(), hd.getFloor(), hd.getJibun(), hd.getType(), lat,
-					lng));
-		}
-
-		return list;
+	public List<HouseInfo> getAllAddress() throws SQLException {
+		return houseDAO.selectAllAddress();
 	}
 
 	@Override
-	public List<House> getHouseListByName(String aptName) throws SQLException {
-		ArrayList<HouseDeal> houseDeal = (ArrayList<HouseDeal>) houseDAO.selectTransactionByName(aptName);
-		ArrayList<HouseInfo> houseInfo = (ArrayList<HouseInfo>) houseDAO.selectAddressByName(aptName);
-		ArrayList<House> list = new ArrayList<>();
+	public List<HouseInfo> getAddressByDong(String dong) throws SQLException {
+		return houseDAO.selectAddressByDong(dong);
+	}
 
-		for (HouseDeal hd : houseDeal) {
-			String lat = null, lng = null;
-			for (HouseInfo hi : houseInfo) {
-				if (hd.getAptName().equals(hi.getAptName())) {
-					lat = hi.getLat();
-					lng = hi.getLng();
-					break;
-				}
+	@Override
+	public List<HouseInfo> getAddressByName(String aptName) throws SQLException {
+		return houseDAO.selectAddressByName(aptName);
+	}
+
+	@Override
+	public List<HouseDeal> getAllTransaction() throws SQLException {
+		return houseDAO.selectAllTransaction();
+	}
+
+	@Override
+	public List<HouseDeal> getTransactionByDong(String dong) throws SQLException {
+		return houseDAO.selectTransactionByDong(dong);
+	}
+
+	@Override
+	public List<HouseDeal> getTransactionByName(String aptName) throws SQLException {
+		return houseDAO.selectTransactionByName(aptName);
+	}
+
+	@Override
+	public List<HouseInfo> searchAround(double lat, double lng, int distance) throws SQLException {
+		List<HouseInfo> list = getAllAddress();
+		ArrayList<HouseInfo> result = new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			HouseInfo house = list.get(i);
+			if (distance >= distance(lat, lng, Double.parseDouble(house.getLat()),
+					Double.parseDouble(house.getLng()))) {
+				result.add(house);
 			}
-			list.add(new House(hd.getDong(), hd.getAptName(), hd.getDealAmount(), hd.getBuildYear(), hd.getDealYear(),
-					hd.getDealMonth(), hd.getDealDay(), hd.getArea(), hd.getFloor(), hd.getJibun(), hd.getType(), lat,
-					lng));
 		}
+		return result;
+	}
 
-		return list;
+	public static double distance(double startLat, double startLong, double endLat, double endLong) {
+
+		double dLat = Math.toRadians((endLat - startLat));
+		double dLong = Math.toRadians((endLong - startLong));
+
+		startLat = Math.toRadians(startLat);
+		endLat = Math.toRadians(endLat);
+
+		double a = haversine(dLat) + Math.cos(startLat) * Math.cos(endLat) * haversine(dLong);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+		return 6371000 * c;
+	}
+
+	public static double haversine(double val) {
+		return Math.pow(Math.sin(val / 2), 2);
 	}
 }

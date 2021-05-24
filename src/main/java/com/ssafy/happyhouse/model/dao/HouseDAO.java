@@ -12,11 +12,16 @@ import com.ssafy.happyhouse.model.dto.HouseInfo;
 @Mapper
 @Repository
 public interface HouseDAO {
-	List<HouseDeal> selectTransaction(String dong) throws SQLException;
 
-	List<HouseDeal> selectTransactionByName(String aptName) throws SQLException;
+	List<HouseInfo> selectAllAddress() throws SQLException;
 
-	List<HouseInfo> selectAddress(String dong) throws SQLException;
+	List<HouseInfo> selectAddressByDong(String dong) throws SQLException;
 
 	List<HouseInfo> selectAddressByName(String aptName) throws SQLException;
+
+	List<HouseDeal> selectAllTransaction() throws SQLException;
+
+	List<HouseDeal> selectTransactionByDong(String dong) throws SQLException;
+
+	List<HouseDeal> selectTransactionByName(String aptName) throws SQLException;
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.happyhouse.model.dto.Favorite;
-import com.ssafy.happyhouse.model.dto.House;
+import com.ssafy.happyhouse.model.dto.HouseInfo;
 import com.ssafy.happyhouse.model.dto.Response;
 import com.ssafy.happyhouse.model.dto.User;
 import com.ssafy.happyhouse.model.service.HouseService;
@@ -158,7 +158,7 @@ public class UserRestController {
 		if (dong == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "동이름을 입력해주세요");
 		}
-		List<House> houses = houseService.getHouseList(dong);
+		List<HouseInfo> houses = houseService.getAddressByDong(dong);
 		if (houses.size() == 0) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "결과가 없습니다.");
 		}
