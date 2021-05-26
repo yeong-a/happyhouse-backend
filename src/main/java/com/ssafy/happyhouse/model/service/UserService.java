@@ -5,11 +5,14 @@ import java.util.List;
 
 import com.ssafy.happyhouse.model.dto.Favorite;
 import com.ssafy.happyhouse.model.dto.User;
+import com.ssafy.happyhouse.model.dto.UserInfo;
 
 public interface UserService {
 	boolean signup(User user) throws SQLException;
 
 	User getUser(String email) throws SQLException;
+
+	UserInfo getInfo(String email) throws SQLException;
 
 	User login(String email, String pwd) throws SQLException;
 

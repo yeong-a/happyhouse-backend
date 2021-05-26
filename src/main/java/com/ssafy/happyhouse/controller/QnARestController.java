@@ -23,7 +23,7 @@ import com.ssafy.happyhouse.model.dto.Response;
 import com.ssafy.happyhouse.model.service.QnABoardService;
 import com.ssafy.happyhouse.model.service.QnABoardServiceImpl;
 
-@CrossOrigin(origins = { "*" }, maxAge = 6000)
+@CrossOrigin(originPatterns = { "*" }, maxAge = 6000, allowCredentials = "true")
 @RestController
 @RequestMapping("/qnaboard")
 public class QnARestController {

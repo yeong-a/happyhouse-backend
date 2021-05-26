@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ssafy.happyhouse.model.dao.UserDAO;
 import com.ssafy.happyhouse.model.dto.Favorite;
 import com.ssafy.happyhouse.model.dto.User;
+import com.ssafy.happyhouse.model.dto.UserInfo;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,5 +67,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean addFavoriteDong(Favorite favorite) {
 		return userDAO.addFavoriteDong(favorite) > 0;
+	}
+
+	@Override
+	public UserInfo getInfo(String email) throws SQLException {
+		User user = getUser(email);
+		return new UserInfo(user.getEmail(), user.getName(), user.getAddress(), user.getDetailAddress());
 	}
 }
