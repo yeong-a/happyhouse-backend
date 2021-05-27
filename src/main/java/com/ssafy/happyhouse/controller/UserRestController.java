@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +28,6 @@ import com.ssafy.happyhouse.model.service.UserServiceImpl;
 
 import lombok.Data;
 
-@CrossOrigin(originPatterns = { "*" }, maxAge = 6000, allowCredentials = "true")
 @RequestMapping("/user")
 @RestController
 public class UserRestController {
@@ -69,10 +67,7 @@ public class UserRestController {
 		if (session.getAttribute("email") == null) {
 			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 		}
-		if (!session.getAttribute("email").equals(user.getEmail())) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "자신의 정보만 수정 가능합니다.");
-		}
-		String email = user.getEmail();
+		String email = (String) session.getAttribute("email");
 		String name = user.getName();
 		String address = user.getAddress();
 		String detailAddress = user.getDetailAddress();

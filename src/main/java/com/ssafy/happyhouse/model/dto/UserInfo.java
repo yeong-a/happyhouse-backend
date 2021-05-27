@@ -10,4 +10,5 @@ public class UserInfo {
 	String name;
 	String address;
 	String detailAddress;
+	boolean isAdmin;
 }

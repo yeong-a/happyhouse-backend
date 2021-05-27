@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,9 +22,8 @@ import com.ssafy.happyhouse.model.dto.Response;
 import com.ssafy.happyhouse.model.service.QnABoardService;
 import com.ssafy.happyhouse.model.service.QnABoardServiceImpl;
 
-@CrossOrigin(originPatterns = { "*" }, maxAge = 6000, allowCredentials = "true")
-@RestController
 @RequestMapping("/qnaboard")
+@RestController
 public class QnARestController {
 
 	private QnABoardService qnaBoardService = new QnABoardServiceImpl();
