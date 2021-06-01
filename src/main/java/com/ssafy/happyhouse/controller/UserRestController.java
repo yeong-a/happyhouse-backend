@@ -65,12 +65,9 @@ public class UserRestController {
 	@PutMapping("/update")
 	private Object modifyInfo(@RequestBody User user, HttpSession session) throws SQLException {
 		if (session.getAttribute("email") == null) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 		}
-		if (!session.getAttribute("email").equals(user.getEmail())) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "자신의 정보만 수정 가능합니다.");
-		}
-		String email = user.getEmail();
+		String email = (String) session.getAttribute("email");
 		String name = user.getName();
 		String address = user.getAddress();
 		String detailAddress = user.getDetailAddress();
@@ -90,7 +87,7 @@ public class UserRestController {
 	@PutMapping("/changepwd")
 	private Object changePassword(@RequestBody ChangePasswordRequest request, HttpSession session) throws SQLException {
 		if (session.getAttribute("email") == null) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 		}
 		if (request.getCurrentPwd() == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "현재 비밀번호를 입력해주세요.");
@@ -111,7 +108,7 @@ public class UserRestController {
 	@PostMapping("/signup")
 	private Object signup(@RequestBody User user, HttpSession session) throws SQLException {
 		if (session.getAttribute("email") != null) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "로그아웃을 먼저 해주세요.");
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그아웃을 먼저 해주세요.");
 		}
 		if (userService.getUser(user.getEmail()) != null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "이미 존재하는 email 입니다.");
@@ -126,7 +123,7 @@ public class UserRestController {
 	private Object deleteInfo(HttpSession session) throws SQLException {
 		String email = (String) session.getAttribute("email");
 		if (email == null) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 		}
 		if (userService.deleteUser(email)) {
 			session.invalidate();
@@ -135,11 +132,20 @@ public class UserRestController {
 		return Response.newError(HttpStatus.INTERNAL_SERVER_ERROR, "에러");
 	}
 
+	@GetMapping("/mypage")
+	private ResponseEntity<Response> myPage(HttpSession session) throws SQLException {
+		String email = (String) session.getAttribute("email");
+		if (email == null) {
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+		}
+		return Response.newResult(HttpStatus.OK, userService.getInfo(email));
+	}
+
 	@GetMapping("/favorites")
 	private ResponseEntity<Response> viewFavorites(HttpSession session) throws SQLException {
 		String email = (String) session.getAttribute("email");
 		if (email == null) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 		}
 		List<String> dong = userService.getFavoriteDong(email);
 		if (dong.size() == 0) {
@@ -153,7 +159,7 @@ public class UserRestController {
 			throws SQLException {
 		String email = (String) session.getAttribute("email");
 		if (email == null) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 		}
 		if (dong == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "동이름을 입력해주세요");
@@ -169,7 +175,7 @@ public class UserRestController {
 	private Object addFavorite(HttpSession session, @RequestBody Favorite favorite) throws SQLException {
 		String email = (String) session.getAttribute("email");
 		if (email == null) {
-			return Response.newError(HttpStatus.BAD_REQUEST, "로그인이 필요합니다.");
+			return Response.newError(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
 		}
 		if (favorite.getDong() == null) {
 			return Response.newError(HttpStatus.BAD_REQUEST, "동이름을 입력해주세요");

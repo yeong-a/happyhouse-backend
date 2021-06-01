@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ssafy.happyhouse.model.dao.UserDAO;
 import com.ssafy.happyhouse.model.dto.Favorite;
 import com.ssafy.happyhouse.model.dto.User;
+import com.ssafy.happyhouse.model.dto.UserInfo;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,23 +35,29 @@ public class UserServiceImpl implements UserService {
 	public User login(String email, String pwd) throws SQLException {
 		User user = getUser(email);
 		if (user == null) {
-			return null; // 이메일 일치하지 않음
+			return null;
 		}
 		if (user.getPwd().equals(pwd)) {
 			return user;
 		} else {
-			return null; // 비번 틀림
+			return null;
 		}
 	}
 
 	@Override
 	public boolean updateUser(String email, String name, String address, String detailAddress) throws SQLException {
-		return userDAO.update(getUser(email)) > 0;
+		User user = getUser(email);
+		user.setName(name);
+		user.setAddress(address);
+		user.setDetailAddress(detailAddress);
+		return userDAO.update(user) > 0;
 	}
 
 	@Override
 	public boolean updatePassword(String email, String pwd) throws SQLException {
-		return userDAO.update(getUser(email)) > 0;
+		User user = getUser(email);
+		user.setPwd(pwd);
+		return userDAO.update(user) > 0;
 	}
 
 	@Override
@@ -66,5 +73,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean addFavoriteDong(Favorite favorite) {
 		return userDAO.addFavoriteDong(favorite) > 0;
+	}
+
+	@Override
+	public UserInfo getInfo(String email) throws SQLException {
+		User user = getUser(email);
+		return new UserInfo(user.getEmail(), user.getName(), user.getAddress(), user.getDetailAddress(),
+				user.isAdmin());
 	}
 }

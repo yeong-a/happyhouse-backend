@@ -38,5 +38,6 @@
 		select * 
 		from housedeal 
 		where AptName = #{aptName}
+		order by dealYear desc
 	</select>
 </mapper>
